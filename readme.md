@@ -21,7 +21,7 @@
       | 3 | central*85%+site*85%         | central*15% | C            |
       | 3 | central*85%+site*85%         | site*15%    | D            |
 
-* [notebook 4]() to be added
+* [notebook 4](notebooks/04-goole_colab_other_imputations.ipynb) Google Colab version
 
   Additional imputation methods are explored to confirm the sensitivity of the imputation method used in [notebook3](notebooks/03-tumor_prediction-sites-central.ipynb).
 
