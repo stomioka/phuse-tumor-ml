@@ -21,18 +21,21 @@
       | 3 | central*85%+site*85%         | central*15% | C            |
       | 3 | central*85%+site*85%         | site*15%    | D            |
 
-* [notebook 4](notebooks\04-other_imputations-google-colab.ipynb) Google Colab version
+* [notebook 4](notebooks/04-other_imputations-google-colab.ipynb) 10/12/2019 Google Colab version
 
   Additional imputation methods are explored to confirm the sensitivity of the imputation method used in [notebook3](notebooks/03-tumor_prediction-sites-central.ipynb).
 
+  This notebook only implements following imputation for knn model.
+
     - median
 
-    non-parametric approach
-    * knn
-    * stochastic gradient descent
-    * naive bayes
-    * decision tree
-    * gradient boosting
+    **non-parametric approach**
+
+    - knn
+    - stochastic gradient descent
+    - naive bayes
+    - decision tree
+    - gradient boosting
 
 
 <details><summary>To be added</summary>
