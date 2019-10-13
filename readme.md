@@ -130,7 +130,7 @@
     </details>
     <details><summary>Notebook 7: parallel convolution network</summary>
     <p>
-* [notebook 7](notebooks\07_dual_cnn_tumor_prediction_sites_central_google_cola.ipynb) 10/13/2019
+* [notebook 7](notebooks/07_dual_cnn_tumor_prediction_sites_central_google_cola.ipynb) 10/13/2019
   - parallel conv net
 
     | m | training and validation data |  test data  | test data id |acc |loss |
