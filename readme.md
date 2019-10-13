@@ -91,6 +91,24 @@
     | 3 | central*85%+site*85%         | central*15% | C            |86.2|0.489|
     | 3 | central*85%+site*85%         | site*15%    | D            |97.1|0.285|
 
+* [notebook 6](notebooks/06_cnn+fnn_tumor_prediction_sites_central_google_cola.ipynb) 10/13/2019
+  - Single conv net
+
+    | m | training and validation data |  test data  | test data id |acc |loss |
+    |---|------------------------------|-------------|--------------|----|-----|
+    | 3 | central*85%+site*85%         | central*15% | C            |87.0|0.404|
+    | 3 | central*85%+site*85%         | site*15%    | D            |97.1|0.233|
+
+
+* [notebook 7](notebooks\07_dual_cnn_tumor_prediction_sites_central_google_cola.ipynb) 10/13/2019
+  - With two parallel conv net
+
+    | m | training and validation data |  test data  | test data id |acc |loss |
+    |---|------------------------------|-------------|--------------|----|-----|
+    | 3 | central*85%+site*85%         | central*15% | C            |86.2|0.380|
+    | 3 | central*85%+site*85%         | site*15%    | D            |98.0|0.176|
+
+
 <details><summary>To be added</summary>
 <p>
 
