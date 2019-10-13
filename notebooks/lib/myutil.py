@@ -186,7 +186,7 @@ def normalize_df(x_df,y_df):
     x = normalize(x,norm='l2', axis=1)  
     return x, y
 
-def generate_tr_ts(df1, df2, m, h=None, method=None, seed=2019):
+def generate_tr_ts(df1, df2, m, h=None, method=None, seed=2019, normalize=True):
     '''
     generates training and test data from central and site
     
@@ -278,12 +278,13 @@ def generate_tr_ts(df1, df2, m, h=None, method=None, seed=2019):
             tr_y=tr_y_3a.append(tr_y_3b, ignore_index=True,sort=False)
 
     # normalization
-    tr_x, tr_y = normalize_df(tr_x, tr_y)
-    ts_x, ts_y = normalize_df(ts_x, ts_y)
+    if normalize==True:
+        tr_x, tr_y = normalize_df(tr_x, tr_y)
+        ts_x, ts_y = normalize_df(ts_x, ts_y)
 
-    if len(ts_x2)>1:
-        
-        ts_x2, ts_y2 = normalize_df( ts_x2, ts_y2)
+        if len(ts_x2)>1:
+
+            ts_x2, ts_y2 = normalize_df( ts_x2, ts_y2)
 
     #print('Training set:\n', len(tr_x),'\nTwo test sets:\n', len(ts_x), '\n', len(ts_x2), )        
     return tr_x, tr_y, ts_x, ts_y, ts_x2, ts_y2
