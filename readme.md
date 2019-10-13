@@ -78,7 +78,7 @@
 
 
 
-* [notebook 5](notebooks\05-fnn-tumor_prediction-sites-central.ipynb) 10/13/2019
+* [notebook 5](notebooks/05-fnn-tumor_prediction-sites-central.ipynb) 10/13/2019
 
   - 4 hidden layer neural network for the prediction.
   - Same imputation method as notebook 3
