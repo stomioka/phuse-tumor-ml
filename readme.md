@@ -80,6 +80,7 @@
 
 * [notebook 5](notebooks/05-fnn-tumor_prediction-sites-central.ipynb) 10/13/2019
 
+  - [Google colab notebook](notebooks/05_fnn_tumor_prediction_sites_central_google_cola.ipynb)
   - 4 hidden layer neural network for the prediction.
   - Same imputation method as notebook 3
 
