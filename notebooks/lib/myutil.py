@@ -357,7 +357,7 @@ def run_models(m, grid_param, model, method=None, h_lst=None ):
                               , iid=True
                               , return_train_score=True)
         if model=='knn':
-            clf = GridSearchCV(estimator=KNeighborsClassifier(n_neighbors = 4
+            clf = GridSearchCV(estimator=KNeighborsClassifier(n_neighbors = 5
                                                              ,algorithm ='auto')
                               , param_grid=grid_param
                               , scoring='accuracy'
@@ -368,7 +368,7 @@ def run_models(m, grid_param, model, method=None, h_lst=None ):
                               , return_train_score=True)
 
         if model=='xgb':
-            skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=2019)
+            skf = StratifiedKFold(n_splits=3, shuffle=True, random_state=2019)
             clf = RandomizedSearchCV(XGBClassifier(objective='multi:softprob'
                                                       , silent=True
                                                       , nthread=-1
@@ -580,3 +580,25 @@ def save_models(df, mo):
 
         #to load
         #clf = pickle.load(open('../models/rf_site-central-model.sav', 'rb'))
+        
+def plot_hist(history):
+    '''plot history acc and loss
+    @param
+    history: history from tf
+    '''
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('Model accuracy (batch size: {})'.format(history.params['batch_size']))
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.show()
+
+    # Plot training & validation loss values
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model loss (batch size: {})'.format(history.params['batch_size']))
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc='upper left')
+    plt.show()
