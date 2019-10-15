@@ -277,6 +277,35 @@ def generate_tr_ts(df1, df2, m, h=None, method=None, seed=2019, normalize=True):
             tr_x=tr_x_3a.append(tr_x_3b, ignore_index=True,sort=False)
             tr_y=tr_y_3a.append(tr_y_3b, ignore_index=True,sort=False)
 
+    if m==4:
+        if method is not None:
+            h=None        
+            idx = np.random.RandomState(seed).permutation(len(df1))
+
+            training_idx, test_idx = idx[:round(.85*len(np.array(df1)))], idx[round(.85*len(np.array(df1))):]
+            tr_x, ts_x = impute_df(df1, method=method).iloc[training_idx,0:7], impute_df(df1, method=method).iloc[test_idx,0:7]
+            tr_y, ts_y = df1.iloc[training_idx,7:8], df1.iloc[test_idx,7:8]              
+        
+        if h is not None:
+            idx = np.random.RandomState(seed).permutation(len(df1))
+
+            training_idx, test_idx = idx[:round(.85*len(np.array(df1)))], idx[round(.85*len(np.array(df1))):]
+            tr_x, ts_x = impute_df(df1, h).iloc[training_idx,0:7], impute_df(df1, h).iloc[test_idx,0:7]
+            tr_y, ts_y = df1.iloc[training_idx,7:8], df1.iloc[test_idx,7:8]
+
+        if method is not None:
+            h=None
+            ts_x2 = impute_df(df2, method=method).iloc[:,0:7]
+            ts_y2 = df2.iloc[:,7:8]
+  
+            
+        if h is not None:
+            ts_x2 = impute_df(df2, h).iloc[:,0:7]
+            ts_y2 = df2.iloc[:,7:8]
+     
+            
+            
+            
     # normalization
     if normalize==True:
         tr_x, tr_y = normalize_df(tr_x, tr_y)
