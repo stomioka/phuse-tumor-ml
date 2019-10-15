@@ -36,7 +36,7 @@ import seaborn as sns
 #ML models
 import xgboost as xgb
 from xgboost import XGBClassifier
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import normalize, MinMaxScaler, RobustScaler, MaxAbsScaler
 from sklearn.model_selection import train_test_split\
 , GridSearchCV, StratifiedKFold, RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
@@ -177,16 +177,32 @@ def median_impute(df):
     return df1
 
 
-def normalize_df(x_df,y_df):
+def normalize_df(x_df,y_df,x_test_df, y_test_df, scaling_method):
     '''normalize'''
 
 
     x = np.array(x_df)
+    x_test = np.array(x_test_df)
+    y_test = np.array(y_test_df)
     y = np.array(y_df).ravel()
-    x = normalize(x,norm='l2', axis=1)  
-    return x, y
+    if scaling_method=='normalize':
+        x = normalize(x,norm='l2', axis=1)
+        x_test = normalize(x_test,norm='l2', axis=1)
+    if scaling_method=='minmax':
+        min_max_scaler = MinMaxScaler()
+        x = min_max_scaler.fit_transform(x)
+        x_test = min_max_scaler.fit_transform(x_test)
+    if scaling_method=='robust':
+        robust = RobustScaler()
+        x= robust.fit_transform(x)
+        x_test = robust.fit_transform(x_test)        
+    if scaling_method=='maxabs':
+        max_abs_scaler = MaxAbsScaler()
+        x= max_abs_scaler.fit_transform(x) 
+        x_test = max_abs_scaler.fit_transform(x_test)       
+    return x, y, x_test, y_test
 
-def generate_tr_ts(df1, df2, m, h=None, method=None, seed=2019, normalize=True):
+def generate_tr_ts(df1, df2, m, scaling_method,h=None, method=None, seed=2019, normalize=True):
     '''
     generates training and test data from central and site
     
@@ -282,38 +298,31 @@ def generate_tr_ts(df1, df2, m, h=None, method=None, seed=2019, normalize=True):
             h=None        
             idx = np.random.RandomState(seed).permutation(len(df1))
 
-            training_idx, test_idx = idx[:round(.85*len(np.array(df1)))], idx[round(.85*len(np.array(df1))):]
+            training_idx, test_idx = idx[:round(.70*len(np.array(df1)))], idx[round(.7*len(np.array(df1))):]
             tr_x, ts_x = impute_df(df1, method=method).iloc[training_idx,0:7], impute_df(df1, method=method).iloc[test_idx,0:7]
             tr_y, ts_y = df1.iloc[training_idx,7:8], df1.iloc[test_idx,7:8]              
-        
+            
         if h is not None:
             idx = np.random.RandomState(seed).permutation(len(df1))
 
-            training_idx, test_idx = idx[:round(.85*len(np.array(df1)))], idx[round(.85*len(np.array(df1))):]
+            training_idx, test_idx = idx[:round(.7*len(np.array(df1)))], idx[round(.7*len(np.array(df1))):]
             tr_x, ts_x = impute_df(df1, h).iloc[training_idx,0:7], impute_df(df1, h).iloc[test_idx,0:7]
             tr_y, ts_y = df1.iloc[training_idx,7:8], df1.iloc[test_idx,7:8]
 
-        if method is not None:
-            h=None
-            ts_x2 = impute_df(df2, method=method).iloc[:,0:7]
-            ts_y2 = df2.iloc[:,7:8]
-  
-            
-        if h is not None:
-            ts_x2 = impute_df(df2, h).iloc[:,0:7]
-            ts_y2 = df2.iloc[:,7:8]
+        ts_x2 = impute_df(df2, h).iloc[:,0:7]
+        ts_y2 = df2.iloc[:,7:8]
      
             
-            
+ 
             
     # normalization
     if normalize==True:
-        tr_x, tr_y = normalize_df(tr_x, tr_y)
-        ts_x, ts_y = normalize_df(ts_x, ts_y)
+        tr_x, tr_y, ts_x, ts_y = normalize_df(tr_x, tr_y,ts_x, ts_y, scaling_method)
+
 
         if len(ts_x2)>1:
 
-            ts_x2, ts_y2 = normalize_df( ts_x2, ts_y2)
+            tr_x, tr_y,   ts_x2, ts_y2 = normalize_df(tr_x, tr_y,  ts_x2, ts_y2, scaling_method)
 
     #print('Training set:\n', len(tr_x),'\nTwo test sets:\n', len(ts_x), '\n', len(ts_x2), )        
     return tr_x, tr_y, ts_x, ts_y, ts_x2, ts_y2
@@ -327,7 +336,7 @@ def load_data():
     site   =site[col_orders]
     return central, site
 
-def run_models(m, grid_param, model, method=None, h_lst=None ):
+def run_models(m, grid_param, model,  scaling_method='normalize', method=None, h_lst=None  ):
     '''
     train model, validate model, plot validation scores from the best model
     
@@ -352,7 +361,7 @@ def run_models(m, grid_param, model, method=None, h_lst=None ):
     best_parms=[]  #stores parameters from the best models
     i=0
     if h_lst is None:
-        tr_x1, tr_y1, _,_, _,_ = generate_tr_ts(df1=central, df2=site, m=m, method=method, seed=2019)
+        tr_x1, tr_y1, _,_, _,_ = generate_tr_ts(df1=central, df2=site, m=m, method=method, seed=2019, scaling_method=scaling_method)
         
         if model=='rf':    
             clf = RandomizedSearchCV(estimator=RandomForestClassifier(random_state=2019)
@@ -404,7 +413,7 @@ def run_models(m, grid_param, model, method=None, h_lst=None ):
                                                       , nthread=-1
                                                       , n_estimators=2000
                                                       , learning_rate=0.01
-                                                      , min_child_weight=1
+                                                      
 
                                                       )
                                                   , param_distributions=grid_param
@@ -430,7 +439,7 @@ def run_models(m, grid_param, model, method=None, h_lst=None ):
     if h_lst is not None:
         for h in h_lst:
             #print('h: {}'.format(h))
-            tr_x1, tr_y1, _,_, _,_ = generate_tr_ts(df1=central, df2=site, m=m, h=h, seed=2019)
+            tr_x1, tr_y1, _,_, _,_ = generate_tr_ts(df1=central, df2=site, m=m, h=h, seed=2019, scaling_method=scaling_method)
             if model=='rf':    
                 clf = RandomizedSearchCV(estimator=RandomForestClassifier(random_state=2019)
                                      , param_distributions=grid_param
@@ -526,7 +535,7 @@ def run_models(m, grid_param, model, method=None, h_lst=None ):
     
     return best_scores, best_parms, best_models, idx
 
-def test_accuracy(best_idx, best_models, t, h_lst):
+def test_accuracy(best_idx, best_models, t, h_lst, scaling_method='normalize', m=None):
     '''plot test accuracy of the best ML algorithm from each of 4 test sets.
     'm=1, test=A','m=2, test=B', 'm=3, test=C', 'm=3, test=D'
     
@@ -539,29 +548,55 @@ def test_accuracy(best_idx, best_models, t, h_lst):
     central, site=load_data()
     test_acc=[]
     h_=[] 
-    for m, idx in enumerate(best_idx):
-        mo = best_models[m]
-        m+=1
-        h_.append(h_lst[idx])
-        tr_x, tr_y, test_x,test_y, _,_ = generate_tr_ts(df1=central, df2=site, m=m, h=h_lst[idx], seed=2019)
-        clf=mo[idx].best_estimator_
-        pred=clf.predict(test_x)
-        test_acc.append(accuracy_score(test_y, pred))
-        if m==3:
+    if m==None:
+        for m, idx in enumerate(best_idx):
+            mo = best_models[m]
+            m+=1
             h_.append(h_lst[idx])
-            tr_x, tr_y, _,_, test_x,test_y = generate_tr_ts(df1=central, df2=site, m=m, h=h_lst[idx], seed=2019)
+            tr_x, tr_y, test_x,test_y, _,_ = generate_tr_ts(df1=central, df2=site, m=m, h=h_lst[idx], seed=2019, scaling_method=scaling_method)
             clf=mo[idx].best_estimator_
             pred=clf.predict(test_x)
             test_acc.append(accuracy_score(test_y, pred))
-    df=pd.DataFrame(
-    {'accuracy': test_acc,
-     'model name': ['m=1, test=A','m=2, test=B', 'm=3, test=C', 'm=3, test=D'],
-     'h': h_
-    })
-    plot_model_performance(df, t, hue='h')
+            if m==3:
+                h_.append(h_lst[idx])
+                tr_x, tr_y, _,_, test_x,test_y = generate_tr_ts(df1=central, df2=site, m=m, h=h_lst[idx], seed=2019, scaling_method=scaling_method)
+                clf=mo[idx].best_estimator_
+                pred=clf.predict(test_x)
+                test_acc.append(accuracy_score(test_y, pred))
+
+        df=pd.DataFrame(
+        {'accuracy': test_acc,
+         'model name': ['m=1, test=A','m=2, test=B', 'm=3, test=C', 'm=3, test=D'],
+         'h': h_
+        })
+    if m==4:
+        model_name=[]
+        test_id=[]        
+        for i, idx in enumerate(best_idx):
+            _, _,  test_x1,test_y1, test_x2,test_y2 = generate_tr_ts(df1=central, df2=site, m=4, h=h_lst[idx], seed=2019, scaling_method=scaling_method)
+            mo = best_models[i]
+
+            h_.append(h_lst[idx])
+            clf=mo[idx].best_estimator_
+            model_name.append(type(clf).__name__)
+            pred=clf.predict(test_x1)
+            test_acc.append(accuracy_score(test_y1, pred))
+            test_id.append('C')
+            h_.append(h_lst[idx])
+            model_name.append(type(clf).__name__)
+            pred=clf.predict(test_x2)
+            test_acc.append(accuracy_score(test_y2, pred)) 
+            test_id.append('A')
+        df=pd.DataFrame(
+        {'accuracy': test_acc,
+         'model name': model_name,
+         'h': h_,
+         'test_id':test_id
+        })        
+    plot_model_performance(df, t, hue='test_id')
     return test_acc
 
-def compare_test(models, hs, m, t):
+def compare_test(models, hs, m, t, scaling_method='normalize'):
     central, site=load_data()
     entries = []
     pred_lst =[]
@@ -569,7 +604,7 @@ def compare_test(models, hs, m, t):
         h=hs[idx]
         model_name = type(model.best_estimator_).__name__ 
 
-        _,_,X_ts1, y_ts1, _,_ =generate_tr_ts(df1=central, df2=site, m=m, h=h, seed=2019)
+        _,_,X_ts1, y_ts1, _,_ =generate_tr_ts(df1=central, df2=site, m=m, h=h, seed=2019, scaling_method=scaling_method)
 
         y_pred=model.predict(X_ts1)
         acc=accuracy_score(y_ts1, y_pred)
@@ -583,7 +618,7 @@ def compare_test(models, hs, m, t):
         entries.append((model_name, h, test_set, acc))
         pred_lst.append(y_pred)
         if m ==3: 
-            _,_,_,_,X_ts2, y_ts2 =generate_tr_ts(df1=central, df2=site, m=3, h=h, seed=2019)
+            _,_,_,_,X_ts2, y_ts2 =generate_tr_ts(df1=central, df2=site, m=3, h=h, seed=2019, scaling_method=scaling_method)
 
             y_pred=model.predict(X_ts2)
             acc=accuracy_score(y_ts2, y_pred)
