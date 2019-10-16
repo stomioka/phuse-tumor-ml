@@ -128,8 +128,9 @@
 
     </p>
     </details>
-    <details><summary>Notebook 7: parallel convolution network</summary>
-    <p>
+<details><summary>Notebook 7: parallel convolution network</summary>
+<p>
+
 * [notebook 7](notebooks/07_dual_cnn_tumor_prediction_sites_central_google_cola.ipynb) 10/13/2019
   - parallel conv net
 
@@ -141,6 +142,7 @@
     </details>
 <details><summary>Notebook 8: ML trained on central with various scaling methods</summary>
 <p>
+
 * [notebook 8](notebooks/08-tumor_prediction-sites-central.ipynb) 10/15/2019
 
 </p>
