@@ -139,3 +139,9 @@
     | 3 | central*85%+site*85%         | site*15%    | D            |98.0|0.176|
     </p>
     </details>
+<details><summary>Notebook 8: ML trained on central with various scaling methods</summary>
+<p>
+* [notebook 8](notebooks/08-tumor_prediction-sites-central.ipynb) 10/15/2019
+
+</p>
+</details>

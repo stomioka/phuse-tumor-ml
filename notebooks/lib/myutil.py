@@ -20,6 +20,13 @@ updated 2019-10-06
 4. addition of save_models(df, mo)
 5. update impute_df to include additional imputation methods as discussed in 2-2-7
 
+updated 2019-10-15
+1. updated normalize_df to allow a few scaling options such as minmax, maxabs, robus
+2. updated generate_tr_ts to allow m=4 for splitting center into 75%,15%
+3. updated test_accuracy for m=4  and use of scaling option. same seed from run_models (default 2019) should be used 
+4. updated run_models to allow m=4 and use of scaling option.
+5.
+
 """
 import os
 import pickle
@@ -581,7 +588,7 @@ def test_accuracy(best_idx, best_models, t, h_lst, scaling_method='normalize', m
             model_name.append(type(clf).__name__)
             pred=clf.predict(test_x1)
             test_acc.append(accuracy_score(test_y1, pred))
-            test_id.append('C')
+            test_id.append('F')
             h_.append(h_lst[idx])
             model_name.append(type(clf).__name__)
             pred=clf.predict(test_x2)
