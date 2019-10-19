@@ -49,7 +49,7 @@
 <details><summary>Notebook 4: testing imputations</summary>
 <p>
 
-* [notebook 4](notebooks/04-other_imputations-google-colab.ipynb) 10/12/2019 Google Colab version
+* [notebook 4 for Google Colab](notebooks/04-other_imputations-google-colab.ipynb) 10/12/2019 Google Colab version
 
   Additional imputation methods are explored to confirm the sensitivity of the imputation method used in [notebook3](notebooks/03-tumor_prediction-sites-central.ipynb).
 
@@ -144,6 +144,7 @@
 <p>
 
 * [notebook 8](notebooks/08-tumor_prediction-sites-central.ipynb) 10/15/2019
+* [notebook 8 for Google Colab](notebooks/08_tumor_prediction_sites_central_google_colab.ipynb) 10/19/2019
 
 </p>
 </details>
