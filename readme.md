@@ -167,7 +167,7 @@ robust scaling
 <details><summary>Notebook 9: Dual CNN for tumor response prediction</summary>
 <p>
 
-* [notebook 8](notebooks/09_dual_cnn_tumor_prediction_sites_central_google_cola.ipynb) 10/15/2019
+* [notebook 9](notebooks/09_dual_cnn_tumor_prediction_sites_central_google_cola.ipynb) 9
  10/27/2019
 
  | m | training and validation data |  test data  | test data id |acc |loss |
