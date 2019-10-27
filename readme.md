@@ -146,5 +146,33 @@
 * [notebook 8](notebooks/08-tumor_prediction-sites-central.ipynb) 10/15/2019
 * [notebook 8 for Google Colab](notebooks/08_tumor_prediction_sites_central_google_colab.ipynb) 10/19/2019
 
+- Test Results:
+-
+robust scaling
+
+  | m | test data id | metric | rf   | svc  | lr   | knn  | xgb  |
+  |---|--------------|--------|------|------|------|------|------|
+  | 4 | E            | acc    | 86.6 | 84.4 | 85.1 | 83.3 | 86.2 |
+  | 4 | A            | acc    | 89.6 | 56.9 | 85.9 | 82.3 | 88.3 |
+
+  no scaling
+
+    | m | test data id | metric | rf   | svc  | lr   | knn  | xgb  |
+    |---|--------------|--------|------|------|------|------|------|
+    | 4 | E            | acc    | 84.4 | 72.1 | 81.5 | 85.9 | 85.9 |
+    | 4 | A            | acc    | 88.4 | 82.6 | 87.9 | 87.4 | 89.2 |
+
+</p>
+</details>
+<details><summary>Notebook 9: Dual CNN for tumor response prediction</summary>
+<p>
+
+* [notebook 8](notebooks/09_dual_cnn_tumor_prediction_sites_central_google_cola.ipynb) 10/15/2019
+ 10/27/2019
+
+ | m | training and validation data |  test data  | test data id |acc |loss |
+ |---|------------------------------|-------------|--------------|----|-----|
+ | 4 | central*85%+site*85%         | central*15% | E            |85.8|0.420|
+ | 4 | central*85%+site*85%         | site*15%    | A            |92.0|0.252|
 </p>
 </details>
